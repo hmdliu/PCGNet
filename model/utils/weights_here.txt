@@ -1,0 +1,2 @@
+res18: resnet18-5c106cde.pth (url: https://download.pytorch.org/models/resnet18-5c106cde.pth)
+res50: resnet50_v2.pth (url: https://drive.google.com/drive/folders/15wx9vOM0euyizq-M1uINgN0_wjVRf9J3)
