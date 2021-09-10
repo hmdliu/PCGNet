@@ -1,3 +1,6 @@
+
+# Code from: https://github.com/hszhao/semseg/blob/master/model/resnet.py
+
 import torch
 import torch.nn as nn
 
