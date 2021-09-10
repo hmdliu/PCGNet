@@ -17,11 +17,11 @@ from torch.utils import data
 from tensorboardX import SummaryWriter
 import torchvision.transforms as transform
 
-# Default Work Dir: /scratch/[NetID]/SSeg/
+# Default Work Dir: /scratch/[NetID]/PAFNet/
 BASE_DIR = os.getcwd()
 sys.path.append(BASE_DIR)
-# config: sys.argv[1]
-SMY_PATH = os.path.join('./results/', sys.argv[2][:sys.argv[2].find('_')], sys.argv[2])
+# config: sys.argv[1] & sys.argv[2]
+SMY_PATH = os.path.join('./results/', sys.argv[1], sys.argv[2][:sys.argv[2].find('_')], sys.argv[2])
 # GPU ids (only when there are multiple GPUs)
 GPUS = [0, 1]
 
@@ -198,10 +198,10 @@ class Trainer():
                 is_best = True
                 self.best_pred = new_pred
                 best_state_dict = self.model.module.state_dict() if self.multi_gpu else self.model.state_dict()
-            utils.save_checkpoint({'epoch': epoch + 1,
-                                   'state_dict': self.model.module.state_dict() if self.multi_gpu else self.model.state_dict(),
-                                   'optimizer': self.optimizer.state_dict(),
-                                   'best_pred': self.best_pred}, self.args, is_best)
+            # utils.save_checkpoint({'epoch': epoch + 1,
+            #                        'state_dict': self.model.module.state_dict() if self.multi_gpu else self.model.state_dict(),
+            #                        'optimizer': self.optimizer.state_dict(),
+            #                        'best_pred': self.best_pred}, self.args, is_best)
 
         final_miou, final_pix_acc = sum(results.miou[-5:]) / 5, sum(results.pix_acc[-5:]) / 5
         final_result = '\nPerformance of last 5 epochs\n[mIoU]: %4f\n[Pixel_Acc]: %4f\n[Best Pred]: %s\n' % (final_miou, final_pix_acc, self.best_pred)
@@ -210,10 +210,11 @@ class Trainer():
         # Export weights if needed
         nyu_flag = (self.args.dataset == 'nyud' and final_miou > 0.49)
         sun_flag = (self.args.dataset == 'sunrgbd' and final_miou > 0.47)
-        print(nyu_flag, sun_flag, self.args.dataset, final_miou)
+        print(nyu_flag, sun_flag, self.args.dataset, round(final_miou, 2))
         if self.args.export or nyu_flag or sun_flag:
             export_info = '_'.join(sys.argv[1:-1] + [str(int(time.time()))])
             torch.save(best_state_dict, os.path.join(SMY_PATH, export_info + '.pth'))
+            print('Exported as %s.pth' % export_info)
 
     def validation(self, epoch):
         # Fast test during the training
