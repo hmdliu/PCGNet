@@ -110,7 +110,7 @@ class Trainer():
         # init class weight
         class_wt = None
         wt_dict = {
-            'nyud': 'nyud_tmp/weight',
+            'nyud': 'nyud/weight',
             'nyud_tmp': 'nyud_tmp/weight',
             'sunrgbd': 'sunrgbd/weight'
         }
@@ -162,6 +162,7 @@ class Trainer():
                 print('epoch {}, step {}, loss {}'.format(epoch + 1, i + 1, train_loss / 50))
                 self.writer.add_scalar('train_loss', train_loss / 50, epoch * len(self.trainloader) + i)
                 train_loss = 0.0
+
         pixAcc = 1.0 * total_correct / (np.spacing(1) + total_label)
         IOU = 1.0 * total_inter / (np.spacing(1) + total_union)
         mIOU = IOU.mean()
@@ -211,8 +212,8 @@ class Trainer():
         sun_flag = (self.args.dataset == 'sunrgbd' and final_miou > 0.47)
         print(nyu_flag, sun_flag, self.args.dataset, final_miou)
         if self.args.export or nyu_flag or sun_flag:
-            export_info = '_'.join(sys.argv + str(int(time.time())))
-            torch.save(best_state_dict, SMY_PATH + export_info + '.pth')
+            export_info = '_'.join(sys.argv[1:-1] + [str(int(time.time()))])
+            torch.save(best_state_dict, os.path.join(SMY_PATH, export_info + '.pth'))
 
     def validation(self, epoch):
         # Fast test during the training

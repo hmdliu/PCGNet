@@ -13,12 +13,12 @@
 module purge
 module load anaconda3/2020.07
 
-cp -r /scratch/$USER/dataset/nyud_tmp/ $SLURM_TMPDIR
-cd /scratch/$USER/SSeg/
+cp -r /scratch/$USER/dataset/nyud/ $SLURM_TMPDIR
+cd /scratch/$USER/PAFNet/
 
 source activate dl
 for arg
-do python train.py $arg $SLURM_TMPDIR > $arg.log 2>&1 &
+do python train.py nyud $arg $SLURM_TMPDIR > $arg.log 2>&1 &
 done
 
 wait

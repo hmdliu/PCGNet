@@ -20,7 +20,7 @@ class NYUD(BaseDataset):
 
         # train/val/test splits are pre-cut
         print('[dataset root]:', root)
-        _nyu_root = os.path.abspath(os.path.join(root, 'nyud_tmp'))
+        _nyu_root = os.path.abspath(os.path.join(root, 'nyud'))
         _mask_dir = os.path.join(_nyu_root, 'nyu_labels40')
         _image_dir = os.path.join(_nyu_root, 'nyu_images')
         _depth_dir = os.path.join(_nyu_root, 'nyu_depths')

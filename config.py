@@ -3,12 +3,14 @@ from addict import Dict
 from copy import deepcopy
 
 def get_config(dataset, info):
-    backbone, epochs = tuple(info.split('_'))
+    backbone, epochs, _ = tuple(info.split('_'))
     assert dataset in ('nyud', 'sunrgbd')
     assert backbone in ('res18', 'res50')
     assert epochs.isdigit()
     
     config = deepcopy(Dict(TEMPLATE))
+
+    config.training.export = True
     config.training.epochs = int(epochs)
     config.training.dataset = dataset
     config.general.encoder = backbone
