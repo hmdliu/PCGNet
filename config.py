@@ -3,17 +3,54 @@ from addict import Dict
 from copy import deepcopy
 
 def get_config(dataset, info):
-    backbone, epochs, _ = tuple(info.split('_'))
-    assert dataset in ('nyud', 'sunrgbd')
-    assert backbone in ('res18', 'res50')
-    assert epochs.isdigit()
-    
-    config = deepcopy(Dict(TEMPLATE))
 
-    config.training.export = True
-    config.training.epochs = int(epochs)
+    # backbone, epochs, _ = tuple(info.split('_'))
+    # assert dataset in ('nyud', 'sunrgbd')
+    # assert backbone in ('res18', 'res50')
+    # assert epochs.isdigit()
+    # config = deepcopy(Dict(TEMPLATE))
+    # config.training.export = True
+    # config.training.epochs = int(epochs)
+    # config.training.dataset = dataset
+    # config.general.encoder = backbone
+
+    date, setting = tuple(info.split('_'))
+    config = deepcopy(Dict(TEMPLATE))
+    config.training.epochs = 600
     config.training.dataset = dataset
-    config.general.encoder = backbone
+    config.general.encoder = 'res18'
+    config.decoder_args.aux = False
+
+    if date == '1125':
+        # decoder: simple add
+        config.decoder_args.lf_args.conv_flag = (False, False)
+        config.decoder_args.lf_args.lf_bb = 'none'
+        config.decoder_args.lf_args.fuse_args = {
+            'fuse_setting': {
+                'merge_mode': 'add',
+                'init': False,
+                'civ': None
+            },
+            'att_module': 'idt',
+            'att_setting': {}
+        }
+
+        # default encoder: CPAF+, d = 8, m = 16, sp = u
+        # n: CPAF; p: CPAF+
+        assert setting[0] in ('n', 'p')
+        if setting[0] == 'n':
+            config.encoder_args.fuse_args.descriptor = -1
+        # pyramid pooling size
+        size_dict = {
+            'a': (1, ),
+            'b': (1, 2),
+            'c': (1, 2, 4),
+            'd': (1, 2, 4, 8)
+        }
+        assert setting[1] in size_dict
+        config.encoder_args.fuse_args.pp_size = size_dict[setting[1]]
+    else:
+        raise ValueError('Invalid date: %s' % date)
     
     return config
 
