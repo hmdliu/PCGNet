@@ -15,7 +15,7 @@ module load anaconda3/2020.07
 
 cd /scratch/$USER/PAFNet/
 
-source activate dl
+source activate cv
 for arg
 do python train.py sunrgbd $arg /scratch/$USER/dataset/ > $arg.log 2>&1 &
 done

@@ -16,7 +16,7 @@ module load anaconda3/2020.07
 cp -r /scratch/$USER/dataset/nyud/ $SLURM_TMPDIR
 cd /scratch/$USER/PAFNet/
 
-source activate dl
+source activate cv
 for arg
 do python train.py nyud $arg $SLURM_TMPDIR > $arg.log 2>&1 &
 done
