@@ -2,7 +2,7 @@ import os
 import sys
 from shutil import move
 
-def archive_log(dst_dir = './results/', log_dir = './'):
+def archive_log(dst_dir = './results/nyud/', log_dir = './'):
     file_list = os.listdir(log_dir)
     # print(file_list)
     for file in file_list:

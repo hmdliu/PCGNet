@@ -14,14 +14,14 @@ def get_config(dataset, info):
     # config.training.dataset = dataset
     # config.general.encoder = backbone
 
-    date, setting = tuple(info.split('_'))
+    group, setting = tuple(info.split('_'))
     config = deepcopy(Dict(TEMPLATE))
-    config.training.epochs = 600
+    config.training.epochs = 500
     config.training.dataset = dataset
     config.general.encoder = 'res18'
     config.decoder_args.aux = False
 
-    if date == '1125':
+    if group == 'cpaf':
         # decoder: simple add
         config.decoder_args.lf_args.conv_flag = (False, False)
         config.decoder_args.lf_args.lf_bb = 'none'
@@ -49,8 +49,35 @@ def get_config(dataset, info):
         }
         assert setting[1] in size_dict
         config.encoder_args.fuse_args.pp_size = size_dict[setting[1]]
+    elif group == 'mgf':
+        # encoder: simple add
+        config.encoder_args.fuse_args = {}
+        config.encoder_args.fuse_module = 'add'
+
+        # decoder: default 4 layer mgf
+        config.decoder_args.lf_args = Dict({
+            'conv_flag': (False, False),
+            'lf_bb': 'none',
+            'fuse_args': {
+                'fuse_setting': {'merge_mode': 'add', 'init': False, 'civ': None},
+                'att_module': 'idt',
+                'att_setting': {}
+            },
+            'fuse_module': 'mgf'
+        })
+        if setting[0] in ('b', 'c'):
+            config.decoder_args.lf_args.conv_flag = (True, False)
+            config.decoder_args.lf_args.lf_bb = \
+                ('irb[2->2]' if setting[0] == 'c' else 'rbb[2->2]')
+        if setting[1] == 'r':
+            config.decoder_args.lf_args.fuse_args.att_module = 'rpa'
+            config.decoder_args.lf_args.fuse_args.att_setting = \
+                {'pp_layer': 4, 'descriptor': 8, 'mid_feats': 16}
+        if setting[2] == 'g':
+            config.decoder_args.lf_args.fuse_args.fuse_setting = \
+                {'merge_mode': 'grp', 'init': True, 'civ': 0.5}
     else:
-        raise ValueError('Invalid date: %s' % date)
+        raise ValueError('Invalid group: %s' % group)
     
     return config
 

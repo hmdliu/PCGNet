@@ -164,7 +164,7 @@ def customized_module(info, feats):
             'rbb': ResidualBasicBlock,
             'luu': LearnedUpUnit,
             'irb': IRB_Block,
-        }
+    }
     # Format1: 'xxx[a->b]', i.e. 'module[in_feats->out_feats]'
     # Format2: 'xxx(a)', i.e. 'module(feats)'
     module_name = info[:3]

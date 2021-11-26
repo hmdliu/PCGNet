@@ -169,8 +169,16 @@ class CC3_Merge(nn.Module):
     def forward(self, x, y):
         return self.cc_block(torch.cat((x, y), dim=1))
 
+class ADD_Module(nn.Module):
+    def __init__(self, *args, **kwargs):
+        super().__init__()
+
+    def forward(self, x, y):
+        return x+y, x, y
+
 # Constant that stores available fusion modules
 FUSE_MODULE_DICT = {
+    'add': ADD_Module,
     'mgf': MGF_Module,
     'cpaf': CPAF_Module
 }
