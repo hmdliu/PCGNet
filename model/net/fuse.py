@@ -85,9 +85,9 @@ class CPAF_Module(nn.Module):
 
         z_x, z_y = self.fc_x(z), self.fc_y(z)               # [b, c]      
         w_x, w_y = self.sigmoid(z_x), self.sigmoid(z_y)     # [b, c]
-        rf_x = x * w_x.view(batch_size, ch, 1, 1)           # [b, c, 1, 1]
-        rf_y = y * w_y.view(batch_size, ch, 1, 1)           # [b, c, 1, 1]
-        out_feats = rf_x + rf_y                             # [b, c, 1, 1]
+        rf_x = x * w_x.view(batch_size, ch, 1, 1)           # [b, c, h, w]
+        rf_y = y * w_y.view(batch_size, ch, 1, 1)           # [b, c, h, w]
+        out_feats = rf_x + rf_y                             # [b, c, h, w]
 
         return out_feats, rf_x, rf_y 
 
