@@ -6,7 +6,7 @@ Pyramid-Context Guided Feature Fusion for RGB-D Semantic Segmentation
 Prepare NYUDv2 and SUN-RGBD datasets:
 ```
 # dataset dir: /[root_path]/dataset
-# [links & scripts to be updated]
+# [links & scripts will be updated soon]
 ```
 Clone the project repo:
 ```
@@ -25,6 +25,12 @@ sbatch train.slurm [dataset_name] [exp_id]
 ```
 # remember to activate the env
 python train.py [dataset_root] [dataset_name] [exp_id] > [log_name].log 2>&1
+```
+
+## Model setting
+See model config template under *config.py*
+```
+# ['exp_id's will be updated soon]
 ```
 
 ## Util functions
